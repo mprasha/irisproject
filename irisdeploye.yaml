@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "iris"
+      release: "intersystems"
+  template:
+    metadata:
+      name: iris-data-pod
+      labels: 
+        app: "iris"
+        release: "intersystems"
+    spec:
+      containers:
+      - args:
+        - --key
+        - /irissys/key/iris.key        
+        name: iris
+        image: "intersystems/iris:2020.1.0-stable"
+        ports:
+          - containerPort: 51773
+          - containerPort: 52773

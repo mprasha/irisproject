@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-master-service
+  labels:
+    app: iris-master-service
+spec:
+ type: LoadBalancer
+ ports:
+ - port: 51773
+   name: superserver
+ - port: 52773
+   name: webserver
+ selector: 
+  statefulset.kubernetes.io/pod-name: iris-data-0

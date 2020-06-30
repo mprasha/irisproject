@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: iris-data
+spec:
+  replicas: 1
+  serviceName: iris-svc
+  selector:
+    matchLabels:
+      app: iris
+  template:
+    metadata:
+      labels:
+        app: iris
+    spec:
+      imagePullSecrets:
+      - name: dockerhub-secret
+
+      containers:
+      - name: iris
+        env:
+        - name: ISC_CPF_MERGE_FILE
+          value: /irissys/cpf/data.cpf
+        - name: ISC_DATA_DIRECTORY
+          value: /irissys/data/IRIS
+        image: intersystems/iris:2020.1.0-stable
+        ports:
+        - containerPort: 51773
+        - containerPort: 52773
+        volumeMounts:
+        - mountPath: /irissys/cpf/
+          name: iris-cpf
+        - mountPath: /irissys/key/
+          name: iris-key
+        - mountPath: /irissys/data/
+          name: iris-data
+
+      volumes:
+      - configMap:
+        name: iris-cpf
+      - name: iris-key
+        secret:
+          secretName: iris-key-secret
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: iris-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: localstorage
+

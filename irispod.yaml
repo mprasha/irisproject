@@ -1,0 +1,15 @@
+--- 
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: iris-gs
+spec: 
+  containers:
+  - args:
+    - --key
+    - /home/prashantha/kub/newpods/iris.key        
+    name: iris
+    image: "intersystems/iris:2020.1.0-stable"
+    ports: 
+      - containerPort: 51773
+      - containerPort: 52773
